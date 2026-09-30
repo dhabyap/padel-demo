@@ -15,6 +15,14 @@ body{background:#0c1210;color:#eef2ef}
 .dnav-btn.active{background:#25D366;color:#06281a;border-color:#25D366}
 .demo-bar{background:#e8a33d;color:#10121a;text-align:center;font-size:.8rem;font-weight:700;padding:8px 12px}
 #stage{width:100%;height:calc(100dvh - 112px);border:0;display:block;background:#F6F8FB}
+@media(max-width:640px){
+.topbar{padding:8px 10px;gap:8px}
+.brand{font-size:.85rem}
+.brand small{display:none}
+.dnav-btn{padding:7px 13px;font-size:.78rem}
+.demo-bar{font-size:.68rem;padding:6px 8px}
+#stage{height:calc(100dvh - 96px)}
+}
 </style>
 </head>
 <body>
@@ -29,8 +37,8 @@ body{background:#0c1210;color:#eef2ef}
 // 1. Simpan file desain sebagai design3.html, design4.html, dst (di folder ini)
 // 2. Tambah 1 baris di bawah. Selesai — tombol nav muncul otomatis.
 var DESIGNS = [
-  {id: 'design1', file: 'design1.html', label: 'Design 1 — Classic'},
-  {id: 'design2', file: 'design2.html', label: 'Design 2 — Modern'}
+  {id: 'design1', file: 'design1.html', label: 'Design 1 — Editorial'},
+  {id: 'design2', file: 'design2.html', label: 'Design 2 — Sporty'}
 ];
 (function(){
   var params = new URLSearchParams(location.search);
