@@ -45,8 +45,8 @@ nav .util{display:flex;justify-content:flex-end;gap:22px;align-items:center}
 #hero{position:relative;min-height:calc(100svh - var(--nav) - 34px);display:flex;flex-direction:column;justify-content:center;overflow:hidden;padding:clamp(20px,4vh,48px) 0 clamp(26px,5vh,60px)}
 #hero>.wrap{position:relative;width:100%}
 #hero .stage{position:relative;display:grid;place-items:center;width:100%;min-height:min(62vh,600px)}
-#hero .word{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none}
-#hero .word b{font-weight:800;font-size:clamp(64px,17.6vw,260px);letter-spacing:-.02em;line-height:.8;white-space:nowrap}
+#hero .word{position:absolute;inset:0;z-index:1;display:grid;place-items:center;pointer-events:none;overflow:hidden}
+#hero .word b{font-weight:800;font-size:clamp(64px,17.6vw,260px);letter-spacing:-.02em;line-height:.8;white-space:nowrap;max-width:96vw}
 #hero .gear{position:relative;z-index:2;height:min(60vh,580px);width:auto;overflow:visible;filter:drop-shadow(0 26px 40px rgba(16,16,16,.22))}
 #hero .tl{position:absolute;left:clamp(18px,3.4vw,44px);top:clamp(6px,2vh,22px);z-index:4}
 #hero .tl p,#hero .br p{font:500 12px/1.9 Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase}
@@ -424,7 +424,13 @@ document.addEventListener('click',e=>{
   var logo = document.getElementById('logo-name');
   if (logo) logo.textContent = name.toUpperCase();
   var hw = document.getElementById('hero-word');
-  if (hw) hw.textContent = name.toUpperCase();
+  if (hw) {
+    hw.textContent = name.toUpperCase();
+    // auto-fit: nama panjang -> font mengecil biar muat 1 baris
+    var len = name.length;
+    var vw = len <= 8 ? 17.6 : len <= 12 ? 13 : len <= 16 ? 10.5 : len <= 22 ? 8 : 6.2;
+    hw.style.fontSize = 'clamp(32px,' + vw + 'vw,260px)';
+  }
   var ic = document.getElementById('info courts');
   if (ic) ic.innerHTML = 'Four glass courts<br>' + city + '<br>Open daily';
   var fn = document.getElementById('foot-name');
