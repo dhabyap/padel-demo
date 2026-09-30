@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title id="meta-title">Demo Padel — Lapangan Padel</title>
+<meta name="description" content="Sewa lapangan padel, coaching, dan komunitas. Booking mudah lewat WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --court:#1B4FBF; --deep:#0C2350; --ball:#D8F03B; --ink:#0F1A2E;
+  --mute:#5B677C; --bg:#F5F7FA; --line:#DFE4EC; --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font-family:'Figtree',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.65}
+h1,h2,h3{font-family:'Barlow Condensed',sans-serif;line-height:1.05}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ball);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+.demo{background:#E8A33D;color:#10121a;text-align:center;font-size:.8rem;font-weight:700;padding:7px 12px}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font:800 1.5rem 'Barlow Condensed',sans-serif;text-decoration:none;color:var(--deep);letter-spacing:.02em}
+.logo i{display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--ball);border:2px solid var(--deep);margin-right:8px}
+.links{display:flex;align-items:center;gap:26px;font-weight:500;font-size:.95rem}
+.links a{text-decoration:none;color:var(--mute)}
+.links a:hover{color:var(--court)}
+
+.btn{display:inline-block;padding:13px 26px;border-radius:10px;font:700 .98rem 'Figtree',sans-serif;text-decoration:none;border:2px solid transparent;cursor:pointer;transition:background .2s,transform .2s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:var(--court);color:#fff}
+.btn.primary:hover{background:#163f9a}
+.btn.ball{background:var(--ball);color:var(--deep)}
+.btn.ghost{border-color:rgba(255,255,255,.4);color:#fff}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.sm{padding:9px 18px;font-size:.9rem}
+
+/* HERO */
+.hero{background:var(--deep);color:#fff;position:relative;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-top:80px;padding-bottom:80px}
+.hero h1{font-size:clamp(2.8rem,6.5vw,5rem);font-weight:800;text-transform:uppercase;margin-bottom:16px}
+.hero p{color:#b9c6df;max-width:460px;margin-bottom:28px;font-size:1.05rem}
+.cta{display:flex;flex-wrap:wrap;gap:12px}
+.intro{animation:rise .8s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.court-art{display:flex;justify-content:center;animation:rise .8s .15s ease both}
+.court-art svg{width:min(290px,72vw);height:auto;border-radius:10px;box-shadow:0 24px 50px rgba(0,0,0,.35)}
+.ball-dot{animation:float 4s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translate(0,0)}50%{transform:translate(10px,-16px)}}
+
+/* STATS */
+.stats{background:var(--white);border-bottom:1px solid var(--line)}
+.stats .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding-top:26px;padding-bottom:26px}
+.stat b{display:block;font:800 2rem 'Barlow Condensed',sans-serif;color:var(--court)}
+.stat span{font-size:.88rem;color:var(--mute)}
+
+section{padding:76px 0}
+.head{max-width:560px;margin-bottom:34px}
+h2{font-size:clamp(2rem,4.5vw,2.9rem);font-weight:800;color:var(--deep);text-transform:uppercase;margin-bottom:8px}
+.head p{color:var(--mute)}
+
+/* LAYANAN */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:18px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:26px;transition:box-shadow .25s}
+.card:hover{box-shadow:0 10px 26px rgba(12,35,80,.09)}
+.card .ico{width:44px;height:44px;border-radius:10px;background:#E8EEFB;color:var(--court);display:grid;place-items:center;margin-bottom:14px}
+.card .ico svg{width:24px;height:24px}
+.card h3{font-size:1.45rem;font-weight:700;margin-bottom:6px;color:var(--deep)}
+.card p{color:var(--mute);font-size:.94rem}
+
+/* FASILITAS */
+.dark{background:var(--deep);color:#fff}
+.dark h2{color:#fff}
+.dark .head p{color:#b9c6df}
+.fac{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;list-style:none}
+.fac li{border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:16px 18px;font-weight:500}
+.fac li::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ball);margin-right:12px}
+
+/* HARGA */
+.prices{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.price{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:28px}
+.price.pop{border:2px solid var(--court)}
+.price h3{font-size:1.3rem;font-weight:700;color:var(--court)}
+.price .rp{font:800 2.7rem 'Barlow Condensed',sans-serif;margin:4px 0;color:var(--deep)}
+.price .rp small{font:500 .9rem 'Figtree',sans-serif;color:var(--mute)}
+.price p{color:var(--mute);font-size:.92rem}
+.note{font-size:.8rem;color:var(--mute);margin-top:16px}
+
+/* BOOKING */
+.book{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.steps{list-style:none;counter-reset:s;display:grid;gap:18px}
+.steps li{counter-increment:s;position:relative;padding-left:52px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:var(--court);color:#fff;font:700 1.25rem 'Barlow Condensed',sans-serif;display:grid;place-items:center}
+.steps b{display:block}
+.steps span{color:var(--mute);font-size:.93rem}
+.form{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:26px;display:grid;gap:14px}
+.form label{font-size:.85rem;font-weight:700;display:grid;gap:6px}
+.form input,.form select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:500 1rem 'Figtree',sans-serif;background:var(--bg);color:var(--ink)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* LOKASI */
+.loc{display:grid;grid-template-columns:.8fr 1.2fr;gap:22px}
+.info{background:var(--deep);color:#fff;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:12px}
+.info h3{font-size:1.7rem}
+.info p{color:#b9c6df}
+.info .btn{align-self:flex-start;margin-top:auto}
+.map{border-radius:16px;overflow:hidden;border:1px solid var(--line);min-height:340px}
+.map iframe{width:100%;height:100%;min-height:340px;border:0;display:block}
+
+footer{background:#081836;color:#8ea0c2;text-align:center;padding:28px 20px;font-size:.85rem}
+
+@media(max-width:820px){
+  .links a:not(.btn){display:none}
+  .hero .wrap,.book,.loc{grid-template-columns:1fr}
+  .hero .wrap{padding-top:52px;padding-bottom:52px}
+  .stats .wrap{grid-template-columns:repeat(2,1fr)}
+  section{padding:56px 0}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="demo" id="demo-bar">Contoh desain</div>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top"><i></i><span id="logo-name">Nama Client</span></a>
+    <div class="links">
+      <a href="#layanan">Layanan</a>
+      <a href="#harga">Harga</a>
+      <a href="#booking">Booking</a>
+      <a href="#lokasi">Lokasi</a>
+      <a class="btn primary sm js-wa" href="#">Chat WhatsApp</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="intro">
+      <h1>Main padel,<br>tanpa ribet</h1>
+      <p>Lapangan berkualitas, jadwal jelas, dan booking cepat lewat WhatsApp. Cocok untuk pemula sampai pemain rutin.</p>
+      <div class="cta">
+        <a class="btn ball" href="#booking">Booking lapangan</a>
+        <a class="btn ghost" href="#harga">Lihat harga</a>
+      </div>
+    </div>
+    <div class="court-art" aria-hidden="true">
+      <svg viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="400" fill="#1B4FBF"/>
+        <rect x="10" y="10" width="180" height="380" fill="none" stroke="#fff" stroke-width="3"/>
+        <g stroke="#fff" stroke-width="3">
+          <line x1="10" y1="130" x2="190" y2="130"/>
+          <line x1="10" y1="270" x2="190" y2="270"/>
+          <line x1="100" y1="130" x2="100" y2="270"/>
+        </g>
+        <rect x="6" y="196" width="188" height="8" rx="2" fill="#fff" opacity=".9"/>
+        <circle class="ball-dot" cx="70" cy="320" r="9" fill="#D8F03B"/>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><b>Indoor &amp; Outdoor</b><span>Pilihan lapangan</span></div>
+    <div class="stat"><b>06.00–23.00</b><span>Jam operasional</span></div>
+    <div class="stat"><b>4 pemain</b><span>Per lapangan</span></div>
+    <div class="stat"><b>WhatsApp</b><span>Booking cepat dibalas</span></div>
+  </div>
+</div>
+
+<section id="layanan">
+  <div class="wrap">
+    <div class="head">
+      <h2>Layanan kami</h2>
+      <p>Semua kebutuhan main padel tersedia di satu tempat.</p>
+    </div>
+    <div class="grid">
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 12h18M12 4v16"/></svg></div>
+        <h3>Sewa Lapangan</h3><p>Lapangan standar internasional dengan pencahayaan malam yang terang.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-7 8-7s8 3 8 7"/></svg></div>
+        <h3>Coaching</h3><p>Kelas privat dan grup bersama pelatih untuk semua level.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/></svg></div>
+        <h3>Sparring &amp; Turnamen</h3><p>Cari lawan sepadan, ikut fun match dan turnamen komunitas.</p>
+      </div>
+      <div class="card">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12c5 0 9-4 9-9M21 12c-5 0-9 4-9 9"/></svg></div>
+        <h3>Sewa Raket &amp; Bola</h3><p>Belum punya perlengkapan? Pinjam di tempat dan langsung main.</p>
+      </div>
+    </div>
+    <p class="note">Contoh isi — layanan bisa disesuaikan dengan usaha Bapak/Ibu.</p>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="wrap">
+    <div class="head">
+      <h2>Fasilitas</h2>
+      <p>Nyaman dipakai sebelum, saat, dan sesudah main.</p>
+    </div>
+    <ul class="fac">
+      <li>Lapangan berpencahayaan LED</li>
+      <li>Area parkir</li>
+      <li>Ruang ganti &amp; toilet</li>
+      <li>Kafe &amp; area tunggu</li>
+      <li>Sewa perlengkapan</li>
+      <li>Mushola</li>
+    </ul>
+  </div>
+</section>
+
+<section id="harga">
+  <div class="wrap">
+    <div class="head">
+      <h2>Harga per jam</h2>
+      <p>Tarif jelas dari awal, tanpa perlu tanya berulang.</p>
+    </div>
+    <div class="prices">
+      <div class="price"><h3>Pagi</h3><div class="rp">Rp 150rb <small>/ jam</small></div><p>Senin–Jumat, 06.00–16.00</p></div>
+      <div class="price pop"><h3>Malam</h3><div class="rp">Rp 250rb <small>/ jam</small></div><p>Senin–Jumat, 16.00–23.00</p></div>
+      <div class="price"><h3>Akhir pekan</h3><div class="rp">Rp 300rb <small>/ jam</small></div><p>Sabtu–Minggu, seharian</p></div>
+    </div>
+    <p class="note">Harga contoh — ganti dengan tarif asli.</p>
+  </div>
+</section>
+
+<section id="booking" style="background:#fff">
+  <div class="wrap book">
+    <div>
+      <div class="head">
+        <h2>Booking mudah</h2>
+        <p>Isi jadwal, kirim ke WhatsApp, lalu tunggu konfirmasi.</p>
+      </div>
+      <ol class="steps">
+        <li><b>Pilih tanggal dan jam</b><span>Isi form di samping.</span></li>
+        <li><b>Kirim lewat WhatsApp</b><span>Pesan terisi otomatis, tinggal kirim.</span></li>
+        <li><b>Terima konfirmasi</b><span>Admin membalas dengan ketersediaan lapangan.</span></li>
+      </ol>
+    </div>
+    <form class="form" id="bookForm">
+      <label>Nama<input id="f-nama" type="text" placeholder="Nama Anda"></label>
+      <div class="row">
+        <label>Tanggal<input id="f-tgl" type="date"></label>
+        <label>Jam main<select id="f-jam"></select></label>
+      </div>
+      <label>Durasi
+        <select id="f-durasi"><option>1 jam</option><option>2 jam</option><option>3 jam</option></select>
+      </label>
+      <button class="btn primary" type="submit">Kirim booking ke WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<section id="lokasi">
+  <div class="wrap">
+    <div class="head">
+      <h2>Lokasi &amp; kontak</h2>
+      <p>Temukan kami di Google Maps.</p>
+    </div>
+    <div class="loc">
+      <div class="info">
+        <h3 id="info-name">-</h3>
+        <p id="info-addr">-</p>
+        <p>WhatsApp: <span id="phoneText"></span></p>
+        <a class="btn ball" id="mapsBtn" href="#" target="_blank" rel="noopener">Buka di Google Maps</a>
+      </div>
+      <div class="map"><iframe id="mapFrame" loading="lazy" title="Peta lokasi"></iframe></div>
+    </div>
+  </div>
+</section>
+
+<footer>Contoh desain website oleh Dhaby, Web Developer. Teks, harga, dan foto bisa diganti sesuai kebutuhan.</footer>
+
+<script>
+// ===== DINAMIS VIA URL PARAM (sama seperti design1) =====
+// ?name=...&category=...&address=...&phone=...&lat=...&lng=...
+(function(){
+  var q = new URLSearchParams(location.search);
+  var name = q.get('name') || 'Soon Padel House';
+  var address = q.get('address') || 'Jl. Guntursari Wetan No.24-26, Turangga, Kec. Lengkong, Kota Bandung';
+  var phone = q.get('phone') || '081122867070';
+  var lat = q.get('lat') || '';
+  var lng = q.get('lng') || '';
+  var digits = (phone || '').replace(/\D/g, '');
+  if (digits.charAt(0) === '0') digits = '62' + digits.slice(1);
+
+  var hasGeo = lat && lng && lat !== '0' && lng !== '0';
+  var query = hasGeo ? (lat + ',' + lng) : (name + ' ' + address);
+  var encQ = encodeURIComponent(query);
+
+  document.title = name + ' — Sewa Lapangan Padel';
+  document.getElementById('meta-title').textContent = name + ' — Sewa Lapangan Padel';
+  document.getElementById('demo-bar').textContent = 'Contoh desain 2 — dibuatkan khusus untuk ' + name + ' oleh Dhaby';
+  document.getElementById('logo-name').textContent = name;
+  document.getElementById('info-name').textContent = name;
+  document.getElementById('info-addr').textContent = address;
+  document.getElementById('phoneText').textContent = phone;
+  document.getElementById('mapsBtn').href = 'https://www.google.com/maps/search/' + encQ;
+  var mf = document.getElementById('mapFrame');
+  mf.src = 'https://www.google.com/maps?q=' + encQ + '&output=embed';
+  mf.title = 'Peta ' + name;
+
+  var sapa = encodeURIComponent('Halo ' + name + ', saya mau tanya jadwal & harga lapangan padel');
+  var waUrl = digits ? ('https://wa.me/' + digits + '?text=' + sapa) : '#';
+  document.querySelectorAll('.js-wa').forEach(function(a){
+    a.href = waUrl;
+    a.target = '_blank'; a.rel = 'noopener';
+  });
+
+  var jam = document.getElementById('f-jam');
+  for (var h = 6; h <= 22; h++) {
+    var o = document.createElement('option');
+    o.textContent = (h < 10 ? '0' : '') + h + '.00';
+    jam.appendChild(o);
+  }
+  var tgl = document.getElementById('f-tgl');
+  tgl.min = new Date().toISOString().split('T')[0];
+
+  document.getElementById('bookForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var pesan = 'Halo ' + name + ', saya mau booking lapangan padel.\n' +
+      'Nama: ' + (document.getElementById('f-nama').value.trim() || '-') + '\n' +
+      'Tanggal: ' + (tgl.value || '-') + '\n' +
+      'Jam: ' + jam.value + '\n' +
+      'Durasi: ' + document.getElementById('f-durasi').value;
+    window.open('https://wa.me/' + digits + '?text=' + encodeURIComponent(pesan), '_blank');
+  });
+
+  window.__client = {name: name, digits: digits};
+})();
+</script>
+</body>
+</html>
