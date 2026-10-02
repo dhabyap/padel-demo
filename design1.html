@@ -46,7 +46,7 @@ nav .util{display:flex;justify-content:flex-end;gap:22px;align-items:center}
 #hero>.wrap{position:relative;width:100%}
 #hero .stage{position:relative;display:grid;place-items:center;width:100%;min-height:min(62vh,600px)}
 #hero .word{position:absolute;inset:0;z-index:3;display:grid;place-items:center;pointer-events:none;overflow:hidden}
-#hero .word b{font-weight:800;font-size:clamp(64px,17.6vw,260px);letter-spacing:-.02em;line-height:.8;white-space:nowrap;max-width:96vw;text-shadow:0 2px 18px rgba(239,237,232,.7)}
+#hero .word b{font-weight:800;font-size:clamp(64px,17.6vw,260px);letter-spacing:-.02em;line-height:.8;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:clip;text-shadow:0 2px 18px rgba(239,237,232,.7)}
 #hero .gear{position:relative;z-index:1;height:min(60vh,580px);width:auto;overflow:visible;opacity:.9;filter:drop-shadow(0 26px 40px rgba(16,16,16,.22))}
 #hero .tl{position:absolute;left:clamp(18px,3.4vw,44px);top:clamp(6px,2vh,22px);z-index:4}
 #hero .tl p,#hero .br p{font:500 12px/1.9 Archivo,sans-serif;letter-spacing:.24em;text-transform:uppercase}
@@ -192,7 +192,7 @@ footer .legal{border-top:1px solid var(--line);padding-top:22px;display:flex;jus
       <g id="ball"><circle cx="262" cy="452" r="34" fill="#D9E43C"/><path d="M234 432c16 12 44 12 56-8M234 474c16-12 44-12 56 8" fill="none" stroke="#101010" stroke-width="2.4" opacity=".75"/></g>
     </svg>
   </div>
-  <div class="br hv" id="h2"><p id="info courts">Four glass courts<br>Bandung<br>Open daily</p></div>
+  <div class="br hv" id="h2"><p id="info-courts">Four glass courts<br>Bandung<br>Open daily</p></div>
   <div class="acts hv" id="h3"><a href="#book" class="btn js-book"><span>Book a court</span></a><a href="#plans" class="btn-line">See membership</a></div>
 </div></header>
 
@@ -413,7 +413,10 @@ document.addEventListener('click',e=>{
 (function(){
   var q = new URLSearchParams(location.search);
   var name = q.get('name') || 'Soon Padel House';
-  var city = q.get('city') || q.get('address') || 'Bandung';
+  var rawAddr = q.get('address') || '';
+  var city = q.get('city') || (rawAddr.split(',').slice(-2).join(',').trim()) || 'Bandung';
+  var dispAddr = rawAddr || 'Bandung';
+  if (dispAddr.length > 90) dispAddr = dispAddr.slice(0, 87) + '...';
   var phone = q.get('phone') || '081122867070';
   var digits = (phone || '').replace(/\D/g, '');
   if (digits.charAt(0) === '0') digits = '62' + digits.slice(1);
@@ -425,18 +428,28 @@ document.addEventListener('click',e=>{
   if (logo) logo.textContent = name.toUpperCase();
   var hw = document.getElementById('hero-word');
   if (hw) {
-    hw.textContent = name.toUpperCase();
+    var dispName = name.toUpperCase();
+    if (dispName.length > 14) dispName = dispName.split(' ').slice(0, 2).join(' ');
+    hw.textContent = dispName;
     // auto-fit: nama panjang -> font mengecil biar muat 1 baris
-    var len = name.length;
-    var vw = len <= 8 ? 17.6 : len <= 12 ? 13 : len <= 16 ? 10.5 : len <= 22 ? 8 : 6.2;
-    hw.style.fontSize = 'clamp(32px,' + vw + 'vw,260px)';
+    var vw = Math.min(17.6, 118 / dispName.length);
+    hw.style.fontSize = 'clamp(32px,' + vw.toFixed(2) + 'vw,260px)';
+    // safety: ukur nyata, kecilkan lagi kalau masih overflow
+    requestAnimationFrame(function(){
+      var avail = hw.parentElement ? hw.parentElement.clientWidth : window.innerWidth * 0.96;
+      var need = hw.scrollWidth;
+      if (need > avail && avail > 0) {
+        var cur = parseFloat(getComputedStyle(hw).fontSize) || 32;
+        hw.style.fontSize = Math.max(24, Math.floor(cur * avail / need)) + 'px';
+      }
+    });
   }
-  var ic = document.getElementById('info courts');
+  var ic = document.getElementById('info-courts');
   if (ic) ic.innerHTML = 'Four glass courts<br>' + city + '<br>Open daily';
   var fn = document.getElementById('foot-name');
-  if (fn) fn.textContent = name.toUpperCase();
+  if (fn) { fn.textContent = name.toUpperCase(); fn.style.overflowWrap = 'anywhere'; }
   var fa = document.getElementById('foot-addr');
-  if (fa) fa.innerHTML = address + '<br><br>WA: ' + phone;
+  if (fa) fa.innerHTML = dispAddr + '<br><br>WA: ' + phone;
 
   var sapa = encodeURIComponent('Halo ' + name + ', saya mau tanya jadwal & harga lapangan padel');
   var waUrl = digits ? ('https://wa.me/' + digits + '?text=' + sapa) : '#';
