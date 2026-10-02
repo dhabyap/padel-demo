@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full antialiased">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PadelPoint — Main Padel, Tanpa Ribet</title>
+<meta name="description" content="Booking lapangan padel online, sewa raket, sparring partner, dan turnamen komunitas. Pilih jam, bayar, langsung main.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root { --lime:#d4ff3a; }
+body { font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif; }
+.fade-in{opacity:0;animation:fadeIn 1.2s ease-out forwards}
+.slide-up{transform:translateY(40px);opacity:0;animation:slideUp 1s ease-out forwards}
+.stagger-1{animation-delay:.2s}.stagger-2{animation-delay:.4s}.stagger-3{animation-delay:.6s}.stagger-4{animation-delay:.8s}
+@keyframes fadeIn{to{opacity:1}}
+@keyframes slideUp{to{transform:translateY(0);opacity:1}}
+.glass-effect{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+.text-lime{color:var(--lime)}
+.bg-lime{background:var(--lime)}
+
+/* Court background */
+.court-bg{position:absolute;top:0;left:0;width:100%;height:900px;z-index:-10;overflow:hidden;
+  background:radial-gradient(60% 50% at 70% 20%,rgba(212,255,58,.18),transparent 70%),
+             radial-gradient(50% 40% at 10% 60%,rgba(34,211,238,.12),transparent 70%)}
+.court-lines{position:absolute;right:-8%;top:90px;width:640px;height:420px;border:2px solid rgba(255,255,255,.18);
+  border-radius:14px;transform:perspective(900px) rotateX(58deg) rotateZ(-18deg);
+  background:linear-gradient(180deg,rgba(37,99,235,.18),rgba(37,99,235,.05))}
+.court-lines::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:3px;background:rgba(255,255,255,.35)}
+.court-lines::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:rgba(255,255,255,.18);
+  box-shadow:0 -105px 0 rgba(255,255,255,.18),0 105px 0 rgba(255,255,255,.18)}
+.ball{position:absolute;right:26%;top:170px;width:46px;height:46px;border-radius:50%;
+  background:radial-gradient(circle at 30% 30%,#f4ffa8,var(--lime) 55%,#9fc400);box-shadow:0 0 60px rgba(212,255,58,.6);
+  animation:bounce 3s ease-in-out infinite}
+.ball::after{content:"";position:absolute;inset:6px;border-radius:50%;border:2px solid rgba(255,255,255,.55);border-left-color:transparent;border-bottom-color:transparent;transform:rotate(30deg)}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-34px)}}
+
+/* Buttons */
+.glow-btn{--x:50%;--y:50%;position:relative;display:inline-flex;align-items:center;gap:8px;border:1px solid #e5e7eb;background:#fff;color:#111827;
+  padding:14px 28px;font-weight:700;border-radius:9999px;cursor:pointer;transition:transform .2s ease;isolation:isolate;
+  box-shadow:0 1px 2px rgba(0,0,0,.05),0 8px 24px rgba(0,0,0,.08)}
+.glow-btn:hover{transform:translateY(-1px)}
+.glow-btn::before{content:"";position:absolute;inset:-4px;border-radius:inherit;pointer-events:none;opacity:0;transition:opacity .2s;z-index:-1;
+  background:radial-gradient(90px 90px at var(--x) var(--y),rgba(255,255,255,.8),rgba(255,255,255,.2) 45%,transparent 70%),
+             radial-gradient(140px 140px at var(--x) var(--y),rgba(212,255,58,.6),transparent 75%);mix-blend-mode:screen}
+.glow-btn:hover::before{opacity:1}
+
+/* Cards */
+.success-card{transition:all .6s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.success-card:hover{transform:translateY(-10px) scale(1.02);box-shadow:0 25px 50px -12px rgba(0,0,0,.6);border-color:rgba(255,255,255,.3)}
+
+/* Booking slots */
+.slot{transition:all .2s}
+.slot.busy{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.slot.sel{background:var(--lime);color:#000;border-color:var(--lime);font-weight:700}
+.counter{animation:slideUp .8s ease-out forwards}
+</style>
+</head>
+
+<body class="min-h-full overflow-x-hidden text-white bg-black">
+<div class="court-bg"><div class="court-lines"></div><div class="ball"></div></div>
+
+<!-- Navigation -->
+<header class="fixed top-4 left-4 right-4 z-50 fade-in">
+  <div class="max-w-7xl mx-auto">
+    <div class="h-14 flex glass-effect bg-white/5 border-white/10 border rounded-full pr-3 pl-3 items-center justify-between">
+      <a href="#" class="flex gap-2 items-center">
+        <div class="w-8 h-8 flex bg-lime rounded-full items-center justify-center"><i data-lucide="circle-dot" class="h-4 w-4 text-black"></i></div>
+        <span class="text-lg font-semibold dyn-name">PadelPoint</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-8 text-sm">
+        <a href="#booking" class="text-white/70 hover:text-white transition-colors">Booking</a>
+        <a href="#lapangan" class="text-white/70 hover:text-white transition-colors">Lapangan</a>
+        <a href="#fasilitas" class="text-white/70 hover:text-white transition-colors">Fasilitas</a>
+        <a href="#harga" class="text-white/70 hover:text-white transition-colors">Harga</a>
+        <a href="#komunitas" class="text-white/70 hover:text-white transition-colors">Komunitas</a>
+      </nav>
+      <div class="hidden md:flex items-center gap-3">
+        <button class="px-4 py-2 text-sm text-white/70 hover:text-white transition-colors">Masuk</button>
+        <a href="#booking" class="px-4 py-2 text-sm bg-white text-black rounded-full hover:bg-white/90 transition-all transform hover:scale-105">Booking Sekarang</a>
+      </div>
+      <button class="md:hidden p-2" id="menuBtn" aria-label="Menu" aria-expanded="false"><i data-lucide="menu" class="h-5 w-5"></i></button>
+    </div>
+    <nav id="mobileMenu" class="md:hidden hidden mt-2 glass-effect bg-black/80 border-white/10 border rounded-2xl px-5 py-4 flex-col gap-1 text-sm">
+      <a href="#booking" class="block py-2 text-white/70 hover:text-white">Booking</a>
+      <a href="#lapangan" class="block py-2 text-white/70 hover:text-white">Lapangan</a>
+      <a href="#fasilitas" class="block py-2 text-white/70 hover:text-white">Fasilitas</a>
+      <a href="#harga" class="block py-2 text-white/70 hover:text-white">Harga</a>
+      <a href="#komunitas" class="block py-2 text-white/70 hover:text-white">Komunitas</a>
+      <a href="#booking" class="block py-2 mt-1 text-center bg-white text-black rounded-full font-semibold">Booking Sekarang</a>
+    </nav>
+    </div>
+  </div>
+</header>
+
+<!-- Hero -->
+<div class="max-w-full sm:px-6 lg:px-8 relative z-10 mr-auto ml-auto pt-40 pr-4 pl-4">
+  <div class="max-w-4xl text-left mt-10 mb-10">
+    <div class="slide-up inline-flex items-center gap-3 px-4 py-2 bg-lime/10 border border-lime/30 rounded-full mb-8" style="background:rgba(212,255,58,.08)">
+      <div class="w-2 h-2 rounded-full animate-pulse bg-lime"></div>
+      <span class="text-sm font-medium">Dimainkan 5.000+ pemain setiap bulan</span>
+    </div>
+    <h1 class="slide-up stagger-1 text-5xl sm:text-6xl lg:text-7xl tracking-tight mb-8 bg-gradient-to-b from-white to-white/70 bg-clip-text text-transparent font-light">
+      Main padel.<br>Rasakan serunya.
+    </h1>
+    <p class="slide-up stagger-2 max-w-2xl leading-relaxed text-lg text-white/60 mb-12">
+      Lapangan indoor berkualitas, booking online dalam hitungan detik, dan komunitas yang siap diajak sparring. Dari pemula sampai kompetitif, semua punya tempat di PadelPoint.
+    </p>
+    <div class="slide-up stagger-3 flex flex-col sm:flex-row gap-4">
+      <a href="#booking" class="glow-btn" id="heroBtn">Booking Lapangan <i data-lucide="arrow-right" class="w-5 h-5"></i></a>
+      <a href="#komunitas" class="px-8 py-4 border border-white/30 rounded-full font-semibold hover:bg-white/10 transition-all flex items-center gap-2 justify-center">
+        <i data-lucide="play" class="h-5 w-5"></i> Kelas Pemula
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Booking -->
+<section id="booking" class="pt-24 pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-12 gap-6">
+      <main class="lg:col-span-8 bg-gray-950/80 glass-effect border border-white/10 rounded-3xl p-6 slide-up stagger-4">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold">Pilih Jadwal Mainmu</h2>
+            <p class="text-sm text-white/50">Slot kosong tersedia hari ini. Klik untuk memilih.</p>
+          </div>
+          <div class="flex gap-2" id="courtTabs">
+            <button data-court="A" class="tab px-4 py-2 text-sm rounded-full border border-white/20 bg-white text-black">Court A</button>
+            <button data-court="B" class="tab px-4 py-2 text-sm rounded-full border border-white/20 hover:bg-white/10">Court B</button>
+            <button data-court="C" class="tab px-4 py-2 text-sm rounded-full border border-white/20 hover:bg-white/10">Court C</button>
+          </div>
+        </div>
+        <div id="slots" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-xs text-white/50">
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-lime"></span>Dipilih</span>
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded border border-white/30"></span>Tersedia</span>
+          <span class="flex items-center gap-2"><span class="w-3 h-3 rounded bg-white/20"></span>Terisi</span>
+        </div>
+      </main>
+
+      <aside class="lg:col-span-4 space-y-4">
+        <div class="bg-gray-950/80 border border-white/10 rounded-3xl p-6">
+          <div class="flex items-center gap-2 mb-4"><i data-lucide="receipt" class="h-4 w-4 text-lime"></i><span class="font-medium">Ringkasan Booking</span></div>
+          <div class="space-y-3 text-sm">
+            <div class="flex justify-between"><span class="text-white/50">Lapangan</span><span id="sumCourt">Court A</span></div>
+            <div class="flex justify-between"><span class="text-white/50">Jam</span><span id="sumTime">Belum dipilih</span></div>
+            <div class="flex justify-between"><span class="text-white/50">Durasi</span><span>60 menit</span></div>
+            <div class="flex justify-between border-t border-white/10 pt-3"><span class="text-white/50">Total</span><span id="sumPrice" class="text-lg font-semibold">Rp 0</span></div>
+          </div>
+          <button id="bookBtn" class="mt-6 w-full py-3 rounded-full bg-lime text-black font-semibold hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed" disabled>Lanjut ke Pembayaran</button>
+          <p id="bookMsg" class="text-xs text-lime mt-3 hidden">Booking berhasil! Cek WhatsApp kamu untuk konfirmasi.</p>
+        </div>
+        <div class="bg-gray-950/80 border border-white/10 rounded-3xl p-6">
+          <div class="flex items-center gap-2 mb-3"><i data-lucide="users" class="h-4 w-4 text-cyan-400"></i><span class="font-medium">Cari Lawan Main</span></div>
+          <p class="text-sm text-white/60 mb-4">Kurang satu pemain? Gabung match terbuka dan main bareng pemain level setara.</p>
+          <div class="flex -space-x-2 mb-4">
+            <div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-black flex items-center justify-center text-xs">RA</div>
+            <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-black flex items-center justify-center text-xs">DK</div>
+            <div class="w-8 h-8 rounded-full bg-emerald-500 border-2 border-black flex items-center justify-center text-xs">SN</div>
+            <div class="w-8 h-8 rounded-full bg-white/10 border-2 border-black flex items-center justify-center text-xs">+9</div>
+          </div>
+          <a href="#komunitas" class="text-sm text-lime hover:underline">Lihat match terbuka →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- Stats / Lapangan -->
+<section id="lapangan" class="pt-20 pb-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl sm:text-5xl tracking-tight mb-4 font-light">Lapangan kelas turnamen</h2>
+      <p class="text-lg text-white/60 max-w-2xl mx-auto">Kaca panoramic, rumput sintetis premium, dan pencahayaan LED tanpa silau.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="success-card rounded-3xl border border-white/10 overflow-hidden" style="background:linear-gradient(135deg,rgba(37,99,235,.35),rgba(0,0,0,.6))">
+        <div class="p-8 h-80 flex flex-col justify-end">
+          <span class="text-xs px-3 py-1 rounded-full bg-white/10 w-fit mb-4">Indoor • Ber-AC</span>
+          <h3 class="text-2xl font-semibold mb-2">Court Panoramic</h3>
+          <p class="text-white/60 text-sm mb-6">Dinding kaca penuh, favorit untuk match santai dan foto konten.</p>
+          <div class="text-3xl font-light"><span class="counter" data-target="3" data-suffix="">0</span> lapangan</div>
+        </div>
+      </div>
+      <div class="success-card rounded-3xl border border-white/10 overflow-hidden" style="background:linear-gradient(135deg,rgba(212,255,58,.25),rgba(0,0,0,.6))">
+        <div class="p-8 h-80 flex flex-col justify-end">
+          <span class="text-xs px-3 py-1 rounded-full bg-white/10 w-fit mb-4">Outdoor • Beratap</span>
+          <h3 class="text-2xl font-semibold mb-2">Court Sunset</h3>
+          <p class="text-white/60 text-sm mb-6">Sirkulasi udara alami, cocok untuk main sore sambil menikmati senja.</p>
+          <div class="text-3xl font-light"><span class="counter" data-target="98" data-suffix="%">0</span> puas</div>
+        </div>
+      </div>
+      <div class="success-card rounded-3xl border border-white/10 overflow-hidden" style="background:linear-gradient(135deg,rgba(168,85,247,.3),rgba(0,0,0,.6))">
+        <div class="p-8 h-80 flex flex-col justify-end">
+          <span class="text-xs px-3 py-1 rounded-full bg-white/10 w-fit mb-4">Kompetisi</span>
+          <h3 class="text-2xl font-semibold mb-2">Center Court</h3>
+          <p class="text-white/60 text-sm mb-6">Tribun mini untuk turnamen bulanan, lengkap dengan skor digital.</p>
+          <div class="text-3xl font-light"><span class="counter" data-target="12" data-suffix="">0</span> turnamen/tahun</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Fasilitas -->
+<section id="fasilitas" class="pb-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl sm:text-5xl tracking-tight mb-4 font-light">Semua yang kamu butuh, satu tempat</h2>
+      <p class="text-lg text-white/60 max-w-2xl mx-auto">Datang dengan tangan kosong, pulang dengan keringat dan senyum.</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="featureGrid"></div>
+  </div>
+</section>
+
+<!-- Harga -->
+<section id="harga" class="pb-24">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <h2 class="text-4xl sm:text-5xl tracking-tight mb-4 font-light">Harga transparan</h2>
+      <p class="text-lg text-white/60">Per lapangan, per jam. Maksimal 4 pemain.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent">
+        <h3 class="text-lg font-semibold mb-1">Pagi</h3><p class="text-sm text-white/50 mb-6">07.00 – 15.00</p>
+        <div class="text-4xl font-light mb-6">Rp 150rb<span class="text-sm text-white/40">/jam</span></div>
+        <ul class="space-y-2 text-sm text-white/60"><li>✓ Sewa bola gratis</li><li>✓ Loker & air minum</li></ul>
+      </div>
+      <div class="p-8 rounded-3xl border border-lime/40 relative" style="background:linear-gradient(135deg,rgba(212,255,58,.12),transparent);border-color:rgba(212,255,58,.4)">
+        <span class="absolute -top-3 left-8 text-xs px-3 py-1 rounded-full bg-lime text-black font-semibold">Terpopuler</span>
+        <h3 class="text-lg font-semibold mb-1">Prime Time</h3><p class="text-sm text-white/50 mb-6">15.00 – 22.00</p>
+        <div class="text-4xl font-light mb-6">Rp 250rb<span class="text-sm text-white/40">/jam</span></div>
+        <ul class="space-y-2 text-sm text-white/60"><li>✓ Sewa bola gratis</li><li>✓ Pencahayaan penuh</li><li>✓ Prioritas booking</li></ul>
+      </div>
+      <div class="p-8 rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent">
+        <h3 class="text-lg font-semibold mb-1">Member</h3><p class="text-sm text-white/50 mb-6">Bulanan</p>
+        <div class="text-4xl font-light mb-6">Rp 899rb<span class="text-sm text-white/40">/bln</span></div>
+        <ul class="space-y-2 text-sm text-white/60"><li>✓ 4 jam main gratis</li><li>✓ Diskon 20% sewa raket</li><li>✓ Akses turnamen member</li></ul>
+      </div>
+    </div>
+    <p class="text-center text-xs text-white/40 mt-6">*Harga contoh, silakan sesuaikan dengan tarif venue kamu.</p>
+  </div>
+</section>
+
+<!-- Komunitas -->
+<section id="komunitas" class="pb-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-4 gap-6 text-center">
+    <div class="p-6"><div class="text-5xl font-light mb-2"><span class="counter" data-target="5000" data-suffix="+">0</span></div><p class="text-white/50 text-sm">Pemain aktif</p></div>
+    <div class="p-6"><div class="text-5xl font-light mb-2"><span class="counter" data-target="120" data-suffix="+">0</span></div><p class="text-white/50 text-sm">Match terbuka / minggu</p></div>
+    <div class="p-6"><div class="text-5xl font-light mb-2"><span class="counter" data-target="15" data-suffix="">0</span></div><p class="text-white/50 text-sm">Pelatih bersertifikat</p></div>
+    <div class="p-6"><div class="text-5xl font-light mb-2"><span class="counter" data-target="365" data-suffix="">0</span></div><p class="text-white/50 text-sm">Hari buka per tahun</p></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="pt-10 pb-32">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="bg-gradient-to-br from-white/10 to-white/5 glass-effect border border-white/20 rounded-3xl p-10 sm:p-16">
+      <h2 class="text-4xl sm:text-5xl tracking-tight mb-6 font-light">Siap smash hari ini?</h2>
+      <p class="text-xl text-white/60 mb-10 max-w-2xl mx-auto">Ajak tiga temanmu, pilih jam, dan mulai main. Pemula juga disambut hangat.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#booking" class="glow-btn justify-center">Booking Sekarang <i data-lucide="arrow-right" class="w-5 h-5"></i></a>
+        <a href="https://wa.me/6281234567890" id="ctaWa" class="px-8 py-4 border border-white/30 rounded-full font-semibold hover:bg-white/10 transition-all flex items-center gap-2 justify-center">
+          <i data-lucide="message-circle" class="h-5 w-5"></i> Tanya via WhatsApp
+        </a>
+      </div>
+      <p class="text-sm text-white/40 mt-6">Gratis reschedule hingga 6 jam sebelum jadwal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-white/10 border-t pt-16 pb-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-5 gap-12 mb-12">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="w-8 h-8 flex bg-lime rounded-full items-center justify-center"><i data-lucide="circle-dot" class="h-4 w-4 text-black"></i></div>
+          <span class="text-xl font-semibold dyn-name">PadelPoint</span>
+        </div>
+        <p class="text-white/60 mb-6 max-w-md dyn-tag">Tempat main padel paling asyik. Lapangan nyaman, komunitas hangat, dan booking tanpa drama.</p>
+        <div class="flex gap-3">
+          <a href="#" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors" aria-label="Instagram"><i data-lucide="instagram" class="h-5 w-5"></i></a>
+          <a href="#" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors" aria-label="Youtube"><i data-lucide="youtube" class="h-5 w-5"></i></a>
+          <a href="#" class="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors" aria-label="Twitter"><i data-lucide="twitter" class="h-5 w-5"></i></a>
+        </div>
+      </div>
+      <div>
+        <h5 class="font-semibold mb-6">Main</h5>
+        <ul class="space-y-3 text-white/60"><li><a href="#booking" class="hover:text-white">Booking</a></li><li><a href="#lapangan" class="hover:text-white">Lapangan</a></li><li><a href="#harga" class="hover:text-white">Harga</a></li><li><a href="#" class="hover:text-white">Membership</a></li></ul>
+      </div>
+      <div>
+        <h5 class="font-semibold mb-6">Komunitas</h5>
+        <ul class="space-y-3 text-white/60"><li><a href="#" class="hover:text-white">Turnamen</a></li><li><a href="#" class="hover:text-white">Kelas Pemula</a></li><li><a href="#" class="hover:text-white">Match Terbuka</a></li><li><a href="#" class="hover:text-white">Event Korporat</a></li></ul>
+      </div>
+      <div>
+        <h5 class="font-semibold mb-6">Kontak</h5>
+        <ul class="space-y-3 text-white/60"><li>Buka 07.00 – 23.00</li><li id="footMail">hello@padelpoint.id</li><li id="footPhone">+62 812-3456-7890</li><li><a href="#" class="hover:text-white">FAQ</a></li></ul>
+      </div>
+    </div>
+    <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10">
+      <p class="text-white/40 text-sm" id="copyText">© 2026 PadelPoint. Hak cipta dilindungi.</p>
+      <div class="flex gap-6 text-white/40 text-sm mt-4 md:mt-0">
+        <a href="#" class="hover:text-white">Kebijakan Privasi</a><a href="#" class="hover:text-white">Syarat & Ketentuan</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ===== DINAMIS VIA URL PARAM (?name=&phone=&address=) =====
+(function(){
+  var q = new URLSearchParams(location.search);
+  var NAME = q.get('name') || 'PadelPoint';
+  var PHONE = (q.get('phone') || '6281234567890').replace(/\D/g, '');
+  document.title = NAME + ' — Main Padel, Tanpa Ribet';
+  document.querySelectorAll('.dyn-name').forEach(function(el){ el.textContent = NAME; });
+  document.querySelectorAll('.dyn-tag').forEach(function(el){ el.textContent = 'Tempat main padel paling asyik di ' + NAME + '. Lapangan nyaman, komunitas hangat, dan booking tanpa drama.'; });
+  var cta = document.getElementById('ctaWa'); if (cta) cta.href = 'https://wa.me/' + PHONE;
+  var fp = document.getElementById('footPhone'); if (fp) fp.textContent = '+' + PHONE.replace(/^62/, '62 ');
+  var cp = document.getElementById('copyText'); if (cp) cp.textContent = '© ' + new Date().getFullYear() + ' ' + NAME + '. Hak cipta dilindungi.';
+  // mobile menu toggle
+  var mb = document.getElementById('menuBtn'), mm = document.getElementById('mobileMenu');
+  if (mb && mm) mb.addEventListener('click', function(){
+    var open = mm.classList.toggle('hidden'); mm.classList.toggle('flex', !open);
+    mb.setAttribute('aria-expanded', String(!open));
+  });
+  if (mm) mm.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ mm.classList.add('hidden'); mm.classList.remove('flex'); }); });
+})();
+document.addEventListener('DOMContentLoaded', () => {
+  // Fasilitas
+  const features = [
+    ['calendar-check','Booking Instan','Pilih lapangan dan jam, konfirmasi langsung masuk. Tanpa telepon, tanpa antre.'],
+    ['circle-dot','Sewa Raket & Bola','Raket padel berbagai merek dan bola baru tersedia, cocok untuk yang baru coba.'],
+    ['graduation-cap','Pelatih Bersertifikat','Kelas privat dan grup untuk pemula hingga level lanjutan dengan kurikulum jelas.'],
+    ['trophy','Turnamen & Liga','Ikuti turnamen bulanan dengan sistem ranking dan hadiah menarik.'],
+    ['shower-head','Locker & Shower','Ruang ganti bersih, loker aman, dan shower air hangat setelah main.'],
+    ['coffee','Cafe & Lounge','Kopi, minuman isotonik, dan makanan ringan untuk istirahat antar set.']
+  ];
+  document.getElementById('featureGrid').innerHTML = features.map((f,i)=>`
+    <div class="fade-in stagger-${(i%4)+1} group p-8 bg-gradient-to-br from-white/5 to-transparent border border-white/10 rounded-3xl hover:border-white/20 transition-all duration-500">
+      <div class="w-10 h-10 mb-6 flex bg-white/5 border border-white/20 rounded-xl items-center justify-center"><i data-lucide="${f[0]}" class="h-6 w-6 text-white"></i></div>
+      <h3 class="text-xl font-semibold mb-3">${f[1]}</h3>
+      <p class="text-white/60 leading-relaxed">${f[2]}</p>
+    </div>`).join('');
+
+  // Booking
+  const hours = ['07.00','08.00','09.00','10.00','11.00','13.00','15.00','16.00','17.00','18.00','19.00','20.00'];
+  const busy = {A:['09.00','17.00','18.00','19.00'],B:['08.00','16.00','20.00'],C:['10.00','11.00','18.00']};
+  let court='A', time=null;
+  const price = h => parseInt(h)<15 ? 150000 : 250000;
+  const fmt = n => 'Rp ' + n.toLocaleString('id-ID');
+  const slots = document.getElementById('slots'), bookBtn = document.getElementById('bookBtn'), msg = document.getElementById('bookMsg');
+
+  function render(){
+    slots.innerHTML = hours.map(h=>{
+      const b = busy[court].includes(h);
+      return `<button data-h="${h}" ${b?'disabled':''} class="slot ${b?'busy':''} ${time===h?'sel':''} py-3 rounded-xl border border-white/20 text-sm hover:border-white/50">${h}</button>`;
+    }).join('');
+    document.getElementById('sumCourt').textContent = 'Court ' + court;
+    document.getElementById('sumTime').textContent = time ? time + ' WIB' : 'Belum dipilih';
+    document.getElementById('sumPrice').textContent = time ? fmt(price(time)) : 'Rp 0';
+    bookBtn.disabled = !time;
+  }
+  slots.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.disabled) return;
+    time = b.dataset.h; msg.classList.add('hidden'); render();
+  });
+  document.getElementById('courtTabs').addEventListener('click', e=>{
+    const t = e.target.closest('.tab'); if(!t) return;
+    court = t.dataset.court; time = null; msg.classList.add('hidden');
+    document.querySelectorAll('.tab').forEach(x=>{
+      const on = x===t;
+      x.classList.toggle('bg-white',on); x.classList.toggle('text-black',on); x.classList.toggle('hover:bg-white/10',!on);
+    });
+    render();
+  });
+  bookBtn.addEventListener('click', ()=>{
+    busy[court].push(time); time = null; msg.classList.remove('hidden'); render();
+  });
+  render();
+
+  // Glow button follow
+  document.querySelectorAll('.glow-btn').forEach(btn=>{
+    btn.addEventListener('mousemove', e=>{
+      const r = btn.getBoundingClientRect();
+      btn.style.setProperty('--x', (e.clientX-r.left)+'px'); btn.style.setProperty('--y', (e.clientY-r.top)+'px');
+    });
+  });
+
+  // Counters
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      const el = entry.target, target = +el.dataset.target, suffix = el.dataset.suffix || '', start = performance.now();
+      (function tick(now){
+        const p = Math.min((now-start)/2000,1), e = 1-Math.pow(1-p,4);
+        el.textContent = Math.floor(target*e).toLocaleString('id-ID') + suffix;
+        if(p<1) requestAnimationFrame(tick);
+      })(start);
+      obs.unobserve(el);
+    });
+  },{threshold:.5});
+  document.querySelectorAll('.counter').forEach(c=>obs.observe(c));
+
+  if (window.lucide) lucide.createIcons();
+});
+</script>
+</body>
+</html>
