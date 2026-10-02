@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANDEJA — Klub Padel</title>
+<meta name="description" content="BANDEJA, klub padel dengan enam lapangan kaca panoramik. Booking lapangan, kelas pemula, americano dan liga mingguan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--fd:"Bodoni Moda","Didot",serif;--ft:"Inter",system-ui,sans-serif;
+--ink:#0b1a3d;--ink2:#0b1a3dcc;--ink3:#0b1a3d99;--line:#0b1a3d26;--surface:#f3f6fb;--surface2:#e4ebf6;
+--sky1:#8db8ff;--sky2:#dcebff;--sky3:#f7fbff;--court:#1c4fd1;--court2:#1740a8;--lines:#ffffffee;--ball:#cfee2b;--on:#0b1a3d;--btn:#0b1a3d;--btnf:#fff;--word:#ffffffd9;--glow:0;--dur:1s}
+[data-theme=dark]{--ink:#e8eefc;--ink2:#e8eefcc7;--ink3:#e8eefc99;--line:#e8eefc26;--surface:#0a1330;--surface2:#101b40;--sky1:#050a1c;--sky2:#0c1a46;--sky3:#1a2a63;--court:#1a45b8;--court2:#12338c;--word:#e8eefc2e;--btn:#e8eefc;--btnf:#0a1330;--glow:1}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ft);font-weight:300;font-size:15px;line-height:1.7;color:var(--ink);background:var(--surface);transition:background var(--dur),color var(--dur);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body.lock{overflow:hidden}
+a{color:inherit;text-decoration:none}ul{list-style:none}
+:focus-visible{outline:2px solid var(--court);outline-offset:3px;border-radius:2px}
+[data-theme=dark] :focus-visible{outline-color:var(--ball)}
+em{font-family:var(--fd);font-style:italic}
+.skip{position:fixed;left:16px;top:-60px;background:var(--surface);padding:10px 14px;z-index:200;border-radius:4px}.skip:focus{top:12px}
+.wrap{max-width:1280px;margin:0 auto;padding:0 48px}
+.display{font-family:var(--fd);font-weight:400;font-size:clamp(34px,4.6vw,66px);line-height:1.04;letter-spacing:-.005em;max-width:16ch;margin-bottom:24px}
+.body{color:var(--ink2);max-width:48ch;font-size:15.5px}
+.kicker{font-size:12.5px;color:var(--ink3);margin-bottom:16px;display:block;letter-spacing:.02em}
+h3{font-family:var(--fd);font-weight:400;font-size:clamp(21px,2vw,28px);line-height:1.15;margin-bottom:8px}
+
+/* buttons */
+.btn{--x:50%;--y:50%;position:relative;isolation:isolate;overflow:hidden;display:inline-flex;justify-content:center;align-items:center;gap:10px;padding:16px 30px;border-radius:40px;border:1px solid transparent;font:500 12.5px var(--ft);letter-spacing:.08em;cursor:pointer;white-space:nowrap;background:var(--btn);color:var(--btnf);transition:color .4s}
+.btn:before{content:"";position:absolute;inset:-1px;z-index:-1;background:var(--ball);clip-path:circle(0% at var(--x) var(--y));transition:clip-path .6s cubic-bezier(.77,0,.18,1)}
+.btn:hover,.btn:focus-visible{color:var(--on)}.btn:hover:before,.btn:focus-visible:before{clip-path:circle(160% at var(--x) var(--y))}
+.btn--ghost{background:transparent;color:var(--ink);border-color:currentColor}
+.btn--sm{padding:11px 20px;font-size:12px}
+
+/* loader */
+.loader{position:fixed;inset:0;z-index:300;background:#07112b;color:#e8eefc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .7s,visibility .7s}
+.loader.off{opacity:0;visibility:hidden}
+.loader b{font-family:var(--fd);font-weight:400;font-size:clamp(48px,9vw,110px);letter-spacing:.06em}
+.loader i{width:150px;height:1px;background:#ffffff26;overflow:hidden;display:block}
+.loader i:after{content:"";display:block;height:100%;background:#cfee2b;animation:ld 1.1s ease forwards}
+@keyframes ld{from{width:0}to{width:100%}}
+
+/* header */
+.header{position:fixed;inset:0 0 auto;height:72px;z-index:40;display:flex;align-items:center;justify-content:space-between;padding:0 48px;transition:background .5s,box-shadow .5s,backdrop-filter .5s}
+.header.sc{background:color-mix(in srgb,var(--surface) 80%,transparent);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:var(--fd);font-size:22px;letter-spacing:.16em}
+.brand svg{width:26px;height:26px}
+.nav{display:flex;gap:30px;font-size:13px}
+.nav a{position:relative;padding:6px 0}
+.nav a:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:currentColor;transform:scaleX(0);transform-origin:100%;transition:transform .5s}
+.nav a:hover:after{transform:scaleX(1);transform-origin:0}
+.tools{display:flex;align-items:center;gap:20px}
+.theme{display:flex;align-items:center;gap:10px;background:0;border:0;color:inherit;font:inherit;font-size:12.5px;cursor:pointer;padding:6px 0}
+.theme .tr{width:34px;height:18px;border:1px solid var(--ink3);border-radius:20px;position:relative}
+.theme .kn{position:absolute;top:3px;left:3px;width:10px;height:10px;border-radius:50%;background:currentColor;transition:transform .6s cubic-bezier(.77,0,.18,1)}
+[data-theme=dark] .kn{transform:translateX(16px)}
+.mb{display:none;background:0;border:0;color:inherit;font:inherit;font-size:13px;cursor:pointer;padding:10px 0}
+.menu{position:fixed;inset:0;z-index:35;background:var(--surface);padding:110px 28px 40px;display:flex;flex-direction:column;justify-content:space-between}
+.menu[hidden]{display:none}
+.menu nav{display:flex;flex-direction:column;gap:6px}
+.menu nav a{font-family:var(--fd);font-size:38px;line-height:1.2}
+
+/* hero */
+.hero{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;background:linear-gradient(180deg,var(--sky1),var(--sky2) 55%,var(--sky3));transition:background var(--dur)}
+.hero .fl{position:absolute;top:-8vh;width:46vmax;height:46vmax;border-radius:50%;background:radial-gradient(circle,#fff7c9aa,#fff2a026 40%,transparent 65%);opacity:var(--glow);transition:opacity var(--dur);pointer-events:none}
+.fl.a{left:-14vmax}.fl.b{right:-14vmax}
+.hero .word{position:absolute;left:0;right:0;top:11vh;text-align:center;font-family:var(--fd);font-size:clamp(90px,21vw,360px);line-height:.9;letter-spacing:.04em;color:var(--word);white-space:nowrap;max-width:100vw;overflow:hidden;text-overflow:clip;transition:color var(--dur);user-select:none}
+.stage{position:absolute;left:50%;top:50%;width:min(44vh,330px);aspect-ratio:1/2;transform:translate(-50%,-46%);perspective:1100px}
+.court3d{width:100%;height:100%;transform:rotateX(58deg) rotateZ(-32deg) scale(1.55);transform-style:preserve-3d;filter:drop-shadow(30px 40px 30px #0b1a3d55);animation:sway 9s ease-in-out infinite}
+.court3d svg{width:100%;height:100%;display:block}
+@keyframes sway{50%{transform:rotateX(58deg) rotateZ(-26deg) scale(1.55)}}
+.ball{position:absolute;left:46%;top:36%;width:clamp(34px,5vw,58px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f2ff7a,var(--ball) 55%,#9bb81a);box-shadow:0 0 28px #cfee2b88;animation:hop 2.4s cubic-bezier(.45,0,.55,1) infinite;z-index:3}
+.ball:after{content:"";position:absolute;inset:8%;border-radius:50%;border:2px solid #ffffffb0;border-left-color:transparent;border-bottom-color:transparent;transform:rotate(-30deg)}
+@keyframes hop{0%,100%{transform:translate(0,40px) scale(1)}50%{transform:translate(18px,-90px) scale(1.12)}}
+.hero__copy{position:absolute;left:48px;bottom:60px;max-width:470px;z-index:4}
+.hero__copy:before{content:"";position:absolute;inset:-30px -40px;z-index:-1;border-radius:40px;filter:blur(12px);background:radial-gradient(ellipse,color-mix(in srgb,var(--surface) 82%,transparent),transparent 72%)}
+.lede{font-family:var(--fd);font-size:clamp(24px,2.3vw,34px);line-height:1.18;margin-bottom:12px}
+.hero__copy p:not(.lede){color:var(--ink2);font-size:14px;max-width:42ch;margin-bottom:24px}
+.acts{display:inline-grid;gap:12px}
+.hero__meta{position:absolute;right:48px;bottom:60px;font-size:12px;color:var(--ink2);text-align:right;z-index:4}
+
+/* marquee */
+.mq{border-block:1px solid var(--line);overflow:hidden;padding:16px 0;font-family:var(--fd);font-style:italic;font-size:22px;color:var(--ink2)}
+.mq div{display:flex;gap:40px;width:max-content;animation:mq 40s linear infinite;align-items:center}
+.mq i{width:8px;height:8px;border-radius:50%;background:var(--court);flex:none}
+[data-theme=dark] .mq i{background:var(--ball)}
+@keyframes mq{to{transform:translateX(-50%)}}
+
+section{padding:120px 0}
+/* two faces */
+.faces{display:grid;grid-template-columns:1.05fr 1fr;gap:72px;align-items:center}
+.pair{display:grid;grid-template-columns:1fr 1fr;aspect-ratio:4/4.6;border-radius:2px;overflow:hidden;position:relative}
+.pair>div{position:relative;display:flex;align-items:flex-end;padding:18px;font-size:12.5px;color:#fff}
+.pair .d{background:linear-gradient(180deg,#8db8ff,#e5f1ff 70%)}
+.pair .n{background:linear-gradient(180deg,#050a1c,#1a2a63 80%)}
+.pair svg{position:absolute;inset:14% 12% 16%;width:76%;height:70%}
+.pair .d span{color:var(--ink)}
+.moments{border-top:1px solid var(--line);margin-top:30px}
+.moments li{display:grid;grid-template-columns:150px 1fr;gap:20px;align-items:baseline;padding:16px 0;border-bottom:1px solid var(--line)}
+.moments b{font-family:var(--fd);font-weight:400;font-size:22px}
+.moments span{color:var(--ink2);font-size:13.5px}
+
+/* rules */
+.surf2{background:var(--surface2);transition:background var(--dur)}
+.guide{display:grid;grid-template-columns:.9fr 1fr;gap:72px;align-items:center}
+.guide svg{width:100%;max-height:74vh;display:block;margin:0 auto}
+.zone{fill:transparent;transition:fill .4s;cursor:pointer}
+.zone.on{fill:#cfee2bcc}
+.rules li{border-top:1px solid var(--line);padding:22px 0 22px 28px;position:relative;opacity:.45;transition:opacity .5s;cursor:pointer}
+.rules li:before{content:"";position:absolute;left:0;top:32px;width:8px;height:8px;border:1px solid var(--ink);border-radius:50%;transition:background .4s}
+.rules li.on{opacity:1}.rules li.on:before{background:var(--ink)}
+.rules p{color:var(--ink2);font-size:14px;max-width:44ch}
+
+/* facilities */
+.fhead{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:end;margin-bottom:44px}
+.fhead .display{margin:0}
+.fgrid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.card{position:relative;overflow:hidden;border-radius:2px;min-height:260px;padding:26px;display:flex;flex-direction:column;justify-content:flex-end;color:#fff;background:var(--court);transition:transform .6s cubic-bezier(.77,0,.18,1)}
+.card:hover{transform:translateY(-4px)}
+.card:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 59px,#ffffff1c 59px 60px),repeating-linear-gradient(0deg,transparent 0 59px,#ffffff1c 59px 60px)}
+.card>*{position:relative}
+.card p{font-size:13.5px;color:#ffffffd6;max-width:36ch}
+.c1{grid-column:span 7;min-height:380px}.c2{grid-column:span 5;background:#10296b}.c3{grid-column:span 5;background:#244fb5}.c4{grid-column:span 7;background:#0d2056}
+.big{position:absolute!important;top:14px;right:22px;font-family:var(--fd);font-size:clamp(70px,9vw,130px);line-height:1;color:#ffffff30}
+.card .ball2{position:absolute;right:30px;bottom:30px;width:44px;height:44px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f2ff7a,var(--ball) 60%,#9bb81a)}
+
+/* programs */
+.pbody{display:grid;grid-template-columns:220px 1fr;gap:56px;margin-top:36px}
+.tabs{display:flex;flex-direction:column;gap:4px;border-left:1px solid var(--line)}
+.tabs button{text-align:left;background:0;border:0;border-left:1px solid transparent;margin-left:-1px;padding:12px 18px;font:400 21px var(--fd);color:var(--ink3);cursor:pointer;transition:color .3s,border-color .3s}
+.tabs button:hover{color:var(--ink)}.tabs button[aria-selected=true]{color:var(--ink);border-left-color:var(--ink)}
+.pane{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.pane[hidden]{display:none}
+.pfig{aspect-ratio:4/3;border-radius:2px;display:grid;place-items:center;background:linear-gradient(135deg,var(--court),var(--court2));color:#fff;font-family:var(--fd);font-size:clamp(46px,6vw,90px);position:relative;overflow:hidden}
+.pfig:after{content:"";position:absolute;inset:12%;border:2px solid #ffffff99}
+.pfig:before{content:"";position:absolute;left:12%;right:12%;top:50%;height:2px;background:#ffffff99}
+.pfig span{position:relative;z-index:1;text-shadow:0 2px 30px #0006}
+.pane p{color:var(--ink2);font-size:14px;max-width:42ch;margin-bottom:18px}
+.facts{border-top:1px solid var(--line)}
+.facts div{display:grid;grid-template-columns:100px 1fr;gap:14px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.facts dt{color:var(--ink3)}
+.pane .btn{margin-top:22px}
+
+/* booking */
+.book{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.steps{border-top:1px solid var(--line);margin-top:30px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);color:var(--ink2);font-size:13.5px}
+.steps b{font-family:var(--fd);font-weight:400;color:var(--ink)}
+.form{display:flex;flex-direction:column;gap:18px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:12.5px;color:var(--ink2)}
+.field input,.field select,.field textarea{font:15px/1.5 var(--ft);font-weight:300;color:var(--ink);background:0;border:0;border-bottom:1px solid var(--ink3);border-radius:0;padding:10px 0;transition:border-color .3s}
+.field select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 12px) 55%,calc(100% - 7px) 55%;background-size:5px 5px;background-repeat:no-repeat}
+.field select option{color:#0b1a3d}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--court)}
+[data-theme=dark] .field input:focus,[data-theme=dark] .field select:focus,[data-theme=dark] .field textarea:focus{border-color:var(--ball)}
+.field.bad input{border-color:#c0392b}
+.hint{font-size:12.5px;color:var(--ink3);max-width:36ch}.hint.err{color:#c0392b}
+.fb{display:flex;flex-wrap:wrap;gap:22px;align-items:center;margin-top:6px}
+
+/* footer */
+.foot{background:var(--surface2);padding-bottom:28px;transition:background var(--dur)}
+.foot__body{display:grid;grid-template-columns:1.3fr .9fr 1fr;gap:56px;padding:72px 48px 56px}
+.stmt{font-family:var(--fd);font-size:clamp(32px,3.4vw,52px);line-height:1.06;max-width:12ch;margin-bottom:28px}
+.time{font-family:var(--fd);font-size:clamp(38px,4vw,60px);line-height:1;font-variant-numeric:tabular-nums}
+.chap{display:flex;flex-direction:column}
+.chap a{font-family:var(--fd);font-size:21px;padding:9px 0;border-bottom:1px solid var(--line);transition:padding-left .4s,color .3s}
+.chap a:hover{padding-left:10px;color:var(--court)}[data-theme=dark] .chap a:hover{color:var(--ball)}
+.meta{border-top:1px solid var(--line);margin-top:14px}
+.meta div{display:grid;grid-template-columns:90px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}
+.meta dt{color:var(--ink3)}
+.mail{font-family:var(--fd);font-size:clamp(19px,1.8vw,25px);border-bottom:1px solid currentColor}
+.fword{font-family:var(--fd);font-size:clamp(90px,19vw,300px);line-height:1;height:.58em;overflow:hidden;color:transparent;-webkit-text-stroke:1px var(--ink);display:flex;justify-content:space-between;margin:0 48px}
+.fword span{transition:color .7s,transform .7s}.fword:hover span{color:var(--ink);transform:translateY(-4%)}
+.note{display:flex;justify-content:space-between;gap:24px;margin:18px 48px 0;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3)}
+
+.rv{opacity:0;transform:translateY(22px);transition:opacity .9s,transform .9s cubic-bezier(.22,1,.36,1)}
+.rv.in{opacity:1;transform:none}
+
+@media(max-width:1000px){.faces,.guide,.book,.fhead{grid-template-columns:1fr;gap:40px}.pbody{grid-template-columns:1fr}.tabs{flex-direction:row;overflow-x:auto;border-left:0;border-bottom:1px solid var(--line)}.tabs button{border-left:0;margin:0 0 -1px;white-space:nowrap;padding:10px 14px;font-size:17px;border-bottom:1px solid transparent}.tabs button[aria-selected=true]{border-bottom-color:var(--ink)}.pane{grid-template-columns:1fr}.foot__body{grid-template-columns:1fr;gap:40px}}
+@media(max-width:760px){body{font-size:14px}.wrap{padding:0 22px}.header{padding:0 22px;height:64px}.nav,.header .btn,.theme .tx{display:none}.mb{display:block}section{padding:84px 0}.hero__copy{left:22px;right:22px;bottom:34px}.hero__meta{display:none}.stage{top:44%}.moments li{grid-template-columns:110px 1fr}.row{grid-template-columns:1fr}.c1,.c2,.c3,.c4{grid-column:span 12;min-height:220px}.foot__body{padding:48px 22px 36px}.fword{margin:0 22px}.note{margin:18px 22px 0;flex-direction:column;gap:8px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#tentang">Langsung ke konten</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="court" viewBox="0 0 200 400">
+    <rect x="0" y="0" width="200" height="400" fill="var(--court2)"/>
+    <rect x="10" y="10" width="180" height="380" fill="var(--court)" stroke="#fff" stroke-width="3"/>
+    <path d="M10 75H190M10 325H190M100 75V325" stroke="#fff" stroke-width="2.5" fill="none"/>
+    <path d="M4 200H196" stroke="#fff" stroke-width="5"/>
+    <path d="M10 10H190M10 390H190" stroke="#cfee2b" stroke-width="3"/>
+  </symbol>
+</svg>
+
+<div class="loader" id="loader" aria-hidden="true"><b>BANDEJA</b><i></i></div>
+
+<header class="header" id="header">
+  <a class="brand" href="#top" aria-label="BANDEJA, kembali ke atas">
+    <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="13" cy="12" rx="8.5" ry="9.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="9" r=".9" fill="currentColor"/><circle cx="14" cy="9" r=".9" fill="currentColor"/><circle cx="12" cy="13" r=".9" fill="currentColor"/><circle cx="16" cy="13" r=".9" fill="currentColor"/><path d="M18 19l9 9" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+    BANDEJA
+  </a>
+  <nav class="nav" aria-label="Utama">
+    <a href="#tentang">Klub</a><a href="#aturan">Aturan main</a><a href="#fasilitas">Fasilitas</a><a href="#program">Program</a><a href="#booking">Booking</a>
+  </nav>
+  <div class="tools">
+    <button class="theme" id="theme" type="button" aria-pressed="false" aria-label="Ganti ke mode malam"><span class="tx">Siang</span><span class="tr"><span class="kn"></span></span><span class="tx">Malam</span></button>
+    <a class="btn btn--sm" href="#booking">Booking lapangan</a>
+    <button class="mb" id="mb" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+  </div>
+</header>
+
+<div class="menu" id="menu" hidden>
+  <nav aria-label="Seluler"><a href="#tentang">Klub</a><a href="#aturan">Aturan main</a><a href="#fasilitas">Fasilitas</a><a href="#program">Program</a><a href="#booking">Booking</a></nav>
+  <a class="btn" href="#booking">Booking lapangan</a>
+</div>
+
+<main id="top">
+  <section class="hero" style="padding:0" aria-label="BANDEJA">
+    <div class="fl a"></div><div class="fl b"></div>
+    <div class="word" aria-hidden="true">BANDEJA</div>
+    <div class="stage" aria-hidden="true">
+      <div class="court3d"><svg viewBox="0 0 200 400"><use href="#court"/></svg></div>
+      <div class="ball"></div>
+    </div>
+    <div class="hero__copy">
+      <p class="lede">Padel dimulai dari satu pukulan yang memantul di kaca.</p>
+      <p>Enam lapangan kaca panoramik, raket dan bola siap pakai, dan kelas untuk yang baru pertama kali memegang raket. Buka setiap hari, 06.00 sampai 23.00.</p>
+      <div class="acts"><a class="btn" href="#booking">Booking lapangan</a><a class="btn btn--ghost" href="#program">Lihat program</a></div>
+    </div>
+    <div class="hero__meta"><span>20 × 10 m · 2 lawan 2</span></div>
+  </section>
+
+  <div class="mq" aria-hidden="true"><div>
+    <span>Bandeja</span><i></i><span>Víbora</span><i></i><span>Chiquita</span><i></i><span>Bajada</span><i></i><span>Smash por tres</span><i></i><span>Salida de pared</span><i></i>
+    <span>Bandeja</span><i></i><span>Víbora</span><i></i><span>Chiquita</span><i></i><span>Bajada</span><i></i><span>Smash por tres</span><i></i><span>Salida de pared</span><i></i>
+  </div></div>
+
+  <section id="tentang">
+    <div class="wrap faces">
+      <div class="pair rv" role="img" aria-label="Lapangan padel pada siang dan malam hari">
+        <div class="d"><svg viewBox="0 0 200 400"><use href="#court"/></svg><span>Siang</span></div>
+        <div class="n"><svg viewBox="0 0 200 400"><use href="#court"/></svg><span>Malam</span></div>
+      </div>
+      <div>
+        <span class="kicker rv">Tentang klub</span>
+        <h2 class="display rv">Siang untuk latihan, malam untuk pertandingan.</h2>
+        <p class="body rv">Padel mudah dipelajari dan susah berhenti dimainkan. Bola boleh memantul di dinding, jadi reli lebih panjang dan semua orang ikut bergerak. Di BANDEJA, kamu bisa datang sendirian dan tetap pulang dengan tiga teman baru.</p>
+        <ul class="moments rv">
+          <li><b>Enam lapangan</b><span>kaca panoramik, lampu LED merata untuk main malam</span></li>
+          <li><b>Empat pemain</b><span>per lapangan, bisa datang sendiri dan kami carikan partner</span></li>
+          <li><b>Sembilan puluh menit</b><span>satu sesi, cukup untuk dua sampai tiga set santai</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="aturan" class="surf2">
+    <div class="wrap guide">
+      <svg viewBox="0 0 200 400" id="cg" role="img" aria-label="Denah lapangan padel dengan zona servis, jaring, dinding dan area belakang">
+        <use href="#court"/>
+        <rect class="zone" data-z="serve" x="10" y="75" width="180" height="125"/>
+        <rect class="zone" data-z="serve" x="10" y="200" width="180" height="125"/>
+        <rect class="zone" data-z="net" x="10" y="190" width="180" height="20"/>
+        <rect class="zone" data-z="wall" x="10" y="10" width="180" height="65"/>
+        <rect class="zone" data-z="wall" x="10" y="325" width="180" height="65"/>
+        <g fill="#fff" font-family="Inter,sans-serif" font-size="9" text-anchor="middle" opacity=".9"><text x="100" y="142">area servis</text><text x="100" y="268">area servis</text><text x="100" y="198" font-size="8">jaring</text><text x="100" y="46">dinding belakang</text><text x="100" y="364">dinding belakang</text></g>
+      </svg>
+      <div>
+        <span class="kicker">Aturan main</span>
+        <h2 class="display">Empat hal yang perlu kamu tahu sebelum masuk lapangan.</h2>
+        <ul class="rules" id="rules">
+          <li data-z="serve" tabindex="0" class="on"><h3>Servis dari bawah</h3><p>Bola dipukul setinggi pinggang atau lebih rendah, harus memantul dulu di lantai, lalu masuk ke kotak servis diagonal lawan.</p></li>
+          <li data-z="wall" tabindex="0"><h3>Kaca ikut bermain</h3><p>Setelah memantul di lantai, bola boleh mengenai kaca atau pagar kawat, lalu tetap bisa kamu kembalikan.</p></li>
+          <li data-z="net" tabindex="0"><h3>Skor seperti tenis</h3><p>Hitungannya 15, 30, 40 dan game. Satu set biasanya sampai enam game, dan pertandingan dimainkan berpasangan.</p></li>
+          <li data-z="serve" tabindex="0"><h3>Tidak ada pukulan keras wajib</h3><p>Reli menang lewat penempatan dan kesabaran. Pemula bisa langsung seru di sesi pertama.</p></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="fasilitas">
+    <div class="wrap">
+      <div class="fhead">
+        <h2 class="display rv">Semua yang kamu butuhkan, kecuali alasan untuk berhenti main.</h2>
+        <p class="body rv">Datang dengan sepatu saja. Raket, bola, handuk dingin, dan kopi sudah kami siapkan.</p>
+      </div>
+      <div class="fgrid">
+        <article class="card c1 rv"><span class="big">6</span><h3>Lapangan kaca panoramik</h3><p>Permukaan rumput sintetis berpasir, kaca tempered setinggi tiga meter, dan atap tinggi supaya hujan tidak membatalkan jadwal.</p></article>
+        <article class="card c2 rv"><span class="big">0</span><h3>Sewa raket dan bola</h3><p>Raket padel dan bola baru tersedia di meja depan, gratis untuk member.</p><span class="ball2"></span></article>
+        <article class="card c3 rv"><span class="big">1</span><h3>Lounge dan kafe</h3><p>Duduk di tribun mini, tonton pertandingan lain sambil minum es kopi.</p></article>
+        <article class="card c4 rv"><span class="big">24</span><h3>Pro shop dan loker</h3><p>Raket, grip, sepatu, dan loker pribadi per bulan. Ada ruang ganti dengan shower air hangat.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="program" class="surf2">
+    <div class="wrap">
+      <span class="kicker">Program</span>
+      <h2 class="display">Pilih cara mainmu.</h2>
+      <div class="pbody">
+        <div class="tabs" role="tablist" aria-label="Program">
+          <button role="tab" id="t0" aria-selected="true" aria-controls="p0">Kelas pemula</button>
+          <button role="tab" id="t1" aria-selected="false" aria-controls="p1" tabindex="-1">Americano sosial</button>
+          <button role="tab" id="t2" aria-selected="false" aria-controls="p2" tabindex="-1">Liga mingguan</button>
+          <button role="tab" id="t3" aria-selected="false" aria-controls="p3" tabindex="-1">Coaching privat</button>
+        </div>
+        <div>
+          <div class="pane" id="p0" role="tabpanel" aria-labelledby="t0">
+            <div class="pfig" aria-hidden="true"><span>Mulai</span></div>
+            <div><h3>Kelas pemula</h3><p>Kenali grip, posisi, servis, dan cara memakai dinding. Di akhir sesi kamu sudah bermain satu game penuh.</p>
+            <dl class="facts"><div><dt>Durasi</dt><dd>90 menit</dd></div><div><dt>Level</dt><dd>Belum pernah main</dd></div><div><dt>Isi</dt><dd>Maksimal 4 peserta, pelatih, raket</dd></div><div><dt>Harga</dt><dd>Rp 150.000 per orang</dd></div></dl>
+            <a class="btn btn--sm" href="#booking" data-pick="Kelas pemula">Ikut kelas ini</a></div>
+          </div>
+          <div class="pane" id="p1" role="tabpanel" aria-labelledby="t1" hidden>
+            <div class="pfig" aria-hidden="true"><span>Rotasi</span></div>
+            <div><h3>Americano sosial</h3><p>Setiap ronde kamu bertukar partner dan lawan, skor dikumpulkan sendiri. Cocok untuk kenalan dan cari teman main.</p>
+            <dl class="facts"><div><dt>Durasi</dt><dd>2 jam</dd></div><div><dt>Level</dt><dd>Pemula sampai menengah</dd></div><div><dt>Isi</dt><dd>8 sampai 16 pemain</dd></div><div><dt>Harga</dt><dd>Rp 120.000 per orang</dd></div></dl>
+            <a class="btn btn--sm" href="#booking" data-pick="Americano sosial">Daftar americano</a></div>
+          </div>
+          <div class="pane" id="p2" role="tabpanel" aria-labelledby="t2" hidden>
+            <div class="pfig" aria-hidden="true"><span>Liga</span></div>
+            <div><h3>Liga mingguan</h3><p>Delapan pekan, satu pertandingan tiap pekan, klasemen terbuka. Pemenang tiap divisi naik kelas.</p>
+            <dl class="facts"><div><dt>Durasi</dt><dd>8 pekan</dd></div><div><dt>Level</dt><dd>Menengah ke atas</dd></div><div><dt>Isi</dt><dd>Tim 2 orang, tiga divisi</dd></div><div><dt>Harga</dt><dd>Rp 400.000 per tim</dd></div></dl>
+            <a class="btn btn--sm" href="#booking" data-pick="Liga mingguan">Daftarkan tim</a></div>
+          </div>
+          <div class="pane" id="p3" role="tabpanel" aria-labelledby="t3" hidden>
+            <div class="pfig" aria-hidden="true"><span>Asah</span></div>
+            <div><h3>Coaching privat</h3><p>Pelatih bersertifikat membedah pukulanmu dan menyusun latihan untuk satu bulan. Bisa sendiri atau berempat.</p>
+            <dl class="facts"><div><dt>Durasi</dt><dd>60 menit</dd></div><div><dt>Level</dt><dd>Semua level</dd></div><div><dt>Isi</dt><dd>1 sampai 4 pemain, rekaman video</dd></div><div><dt>Harga</dt><dd>Rp 350.000 per sesi</dd></div></dl>
+            <a class="btn btn--sm" href="#booking" data-pick="Coaching privat">Pesan pelatih</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="booking">
+    <div class="wrap book">
+      <div>
+        <span class="kicker">Booking</span>
+        <h2 class="display">Amankan lapanganmu sekarang.</h2>
+        <p class="body">Isi formulir, lalu pesanmu terkirim ke WhatsApp admin dan dikonfirmasi dalam beberapa menit.</p>
+        <ol class="steps">
+          <li><b>1</b><span>Pilih tanggal, jam, dan jenis sesi.</span></li>
+          <li><b>2</b><span>Kirim lewat WhatsApp, admin cek ketersediaan lapangan.</span></li>
+          <li><b>3</b><span>Bayar sebelum main, datang 10 menit lebih awal.</span></li>
+        </ol>
+      </div>
+      <form class="form" id="form" novalidate>
+        <div class="row">
+          <label class="field">Nama<input name="nama" required autocomplete="name"></label>
+          <label class="field">Nomor WhatsApp<input name="wa" type="tel" required autocomplete="tel"></label>
+        </div>
+        <div class="row">
+          <label class="field">Tanggal<input name="tgl" type="date" required></label>
+          <label class="field">Jam mulai<select name="jam" required><option value="">Pilih jam</option></select></label>
+        </div>
+        <div class="row">
+          <label class="field">Jenis sesi<select name="jenis" id="jenis"><option>Sewa lapangan</option><option>Kelas pemula</option><option>Americano sosial</option><option>Liga mingguan</option><option>Coaching privat</option></select></label>
+          <label class="field">Jumlah pemain<select name="pemain"><option>1</option><option>2</option><option>3</option><option selected>4</option></select></label>
+        </div>
+        <label class="field">Catatan<textarea name="note" rows="2"></textarea></label>
+        <div class="fb"><button class="btn" type="submit">Kirim ke WhatsApp</button><p class="hint" id="hint">Lapangan dipegang setelah admin mengonfirmasi.</p></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="mq" aria-hidden="true"><div>
+    <span>Buka setiap hari 06.00–23.00</span><i></i><span>Raket tersedia</span><i></i><span>Lapangan kaca</span><i></i><span>Kelas pemula</span><i></i>
+    <span>Buka setiap hari 06.00–23.00</span><i></i><span>Raket tersedia</span><i></i><span>Lapangan kaca</span><i></i><span>Kelas pemula</span><i></i>
+  </div></div>
+  <div class="foot__body">
+    <div><p class="stmt">Sampai jumpa di lapangan.</p><div><span class="kicker">Waktu setempat</span><div class="time" id="clock">--:--</div></div></div>
+    <nav class="chap" aria-label="Bagian"><a href="#tentang">Klub</a><a href="#aturan">Aturan main</a><a href="#fasilitas">Fasilitas</a><a href="#program">Program</a><a href="#booking">Booking</a></nav>
+    <div><span class="kicker">Hubungi kami</span><a class="mail" href="mailto:halo@bandeja.id">halo@bandeja.id</a>
+      <dl class="meta"><div><dt>Alamat</dt><dd>Jl. Raket Raya No. 8</dd></div><div><dt>Jam buka</dt><dd>Setiap hari, 06.00–23.00</dd></div><div><dt>Instagram</dt><dd>@bandeja.padel</dd></div></dl></div>
+  </div>
+  <a class="fword" href="#top" aria-label="Kembali ke atas"><span>B</span><span>A</span><span>N</span><span>D</span><span>E</span><span>J</span><span>A</span></a>
+  <div class="note"><span>© <span id="yr">2026</span> BANDEJA Padel Club</span><span>Main bagus, main aman, main sampai malam.</span></div>
+</footer>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var WA_PH = (q.get('phone') || '6281234567890').replace(/\D/g, '');
+  var WA = WA_PH; /* dinamis via ?phone= */
+  var NAME = q.get('name') || 'BANDEJA';
+  var ADDR = q.get('address') || 'Jl. Raket Raya No. 8';
+  var CITY = q.get('city') || 'Bandung';
+  document.title = NAME + ' — Klub Padel';
+  var $=function(s,c){return(c||document).querySelector(s)},$$=function(s,c){return[].slice.call((c||document).querySelectorAll(s))};
+  // ===== NAMA CLIENT DINAMIS: loader, brand, hero word, footer giant, alamat =====
+  var dispName = NAME.toUpperCase();
+  var short = dispName.length > 14 ? dispName.split(' ').slice(0, 2).join(' ') : dispName;
+  var lb = $('.loader b'); if (lb) lb.textContent = short;
+  var brand = $('.brand'); if (brand) brand.innerHTML = brand.innerHTML.replace(/BANDEJA/, short);
+  var hw = $('.hero .word'); if (hw) { hw.textContent = short; var vw = Math.min(21, 118 / short.length); hw.style.fontSize = 'clamp(32px,' + vw.toFixed(2) + 'vw,360px)'; }
+  var fw = $('.fword');
+  if (fw) { fw.innerHTML = ''; short.split('').forEach(function(ch){ var s = document.createElement('span'); s.textContent = ch === ' ' ? ' ' : ch; fw.appendChild(s); }); }
+  var addrDd = document.querySelector('.meta div dd'); if (addrDd) addrDd.textContent = ADDR;
+  var noteSp = document.querySelector('.note span'); if (noteSp) noteSp.innerHTML = '&copy; <span>' + new Date().getFullYear() + '</span> ' + short + ' Padel Club';
+  var root=document.documentElement;
+
+  /* loader */
+  window.addEventListener("load",function(){setTimeout(function(){$("#loader").classList.add("off")},1100)});
+  setTimeout(function(){$("#loader").classList.add("off")},2600);
+
+  /* theme */
+  var tb=$("#theme");
+  function setTheme(t){root.setAttribute("data-theme",t);tb.setAttribute("aria-pressed",t==="dark");tb.setAttribute("aria-label",t==="dark"?"Ganti ke mode siang":"Ganti ke mode malam")}
+  tb.addEventListener("click",function(){setTheme(root.getAttribute("data-theme")==="dark"?"light":"dark")});
+
+  /* header + menu */
+  var h=$("#header");
+  function sc(){h.classList.toggle("sc",window.scrollY>40)}sc();window.addEventListener("scroll",sc,{passive:true});
+  var mb=$("#mb"),menu=$("#menu");
+  function tm(o){menu.hidden=!o;mb.setAttribute("aria-expanded",o);mb.textContent=o?"Tutup":"Menu";document.body.classList.toggle("lock",o)}
+  mb.addEventListener("click",function(){tm(menu.hidden)});
+  $$("a",menu).forEach(function(a){a.addEventListener("click",function(){tm(false)})});
+
+  /* reveal */
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}})},{threshold:.15});
+    $$(".rv").forEach(function(el){io.observe(el)});
+  }else{$$(".rv").forEach(function(el){el.classList.add("in")})}
+
+  /* rules <-> court zones */
+  var items=$$("#rules li"),zones=$$(".zone");
+  function pick(li){items.forEach(function(i){i.classList.toggle("on",i===li)});zones.forEach(function(z){z.classList.toggle("on",z.dataset.z===li.dataset.z)})}
+  items.forEach(function(li){li.addEventListener("mouseenter",function(){pick(li)});li.addEventListener("focus",function(){pick(li)});li.addEventListener("click",function(){pick(li)})});
+  zones.forEach(function(z){z.addEventListener("click",function(){pick(items.filter(function(i){return i.dataset.z===z.dataset.z})[0])})});
+  pick(items[0]);
+
+  /* tabs */
+  var tabs=$$('[role=tab]'),panes=$$('[role=tabpanel]');
+  function sel(i){tabs.forEach(function(t,k){t.setAttribute("aria-selected",k===i);t.tabIndex=k===i?0:-1;panes[k].hidden=k!==i})}
+  tabs.forEach(function(t,i){
+    t.addEventListener("click",function(){sel(i)});
+    t.addEventListener("keydown",function(e){var d=e.key==="ArrowDown"||e.key==="ArrowRight"?1:e.key==="ArrowUp"||e.key==="ArrowLeft"?-1:0;if(d){e.preventDefault();var n=(i+d+tabs.length)%tabs.length;sel(n);tabs[n].focus()}});
+  });
+  $$("[data-pick]").forEach(function(a){a.addEventListener("click",function(){$("#jenis").value=a.dataset.pick})});
+
+  /* button glow follows pointer */
+  $$(".btn").forEach(function(b){b.addEventListener("pointermove",function(e){var r=b.getBoundingClientRect();b.style.setProperty("--x",(e.clientX-r.left)+"px");b.style.setProperty("--y",(e.clientY-r.top)+"px")})});
+
+  /* booking form */
+  var jam=$("select[name=jam]");
+  for(var i=6;i<=22;i++){var o=document.createElement("option");o.value=o.textContent=("0"+i).slice(-2)+".00";jam.appendChild(o)}
+  var tgl=$("input[name=tgl]");tgl.min=new Date().toISOString().slice(0,10);
+  $("#form").addEventListener("submit",function(e){
+    e.preventDefault();var f=e.target,bad=false;
+    $$(".field",f).forEach(function(l){var c=l.querySelector("[required]");var ng=c&&!c.value.trim();l.classList.toggle("bad",!!ng);if(ng)bad=true});
+    var hint=$("#hint");
+    if(bad){hint.textContent="Lengkapi nama, nomor WhatsApp, tanggal, dan jam.";hint.classList.add("err");return}
+    hint.classList.remove("err");hint.textContent="Membuka WhatsApp...";
+    var d=new FormData(f);
+    var msg="Halo " + NAME + ", saya mau booking.\nNama: "+d.get("nama")+"\nWhatsApp: "+d.get("wa")+"\nJenis: "+d.get("jenis")+"\nTanggal: "+d.get("tgl")+"\nJam: "+d.get("jam")+"\nPemain: "+d.get("pemain")+(d.get("note")?"\nCatatan: "+d.get("note"):"");
+    window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank","noopener");
+  });
+
+  /* clock + year */
+  function tick(){var n=new Date();$("#clock").textContent=n.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}).replace(".",":")}
+  tick();setInterval(tick,30000);$("#yr").textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
